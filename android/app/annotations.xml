@@ -1,0 +1,5 @@
+<root>
+    <item name='android.app.ActionBar.LayoutParams'>
+        <annotation name='java.lang.Deprecated' />
+    </item>
+</root>
