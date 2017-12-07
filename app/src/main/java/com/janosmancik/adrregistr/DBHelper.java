@@ -1,22 +1,54 @@
 package com.janosmancik.adrregistr;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.util.ArrayList;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class DBHelper extends SQLiteOpenHelper{
 
     //The Android's default system path of your application database.
-    String DB_PATH = NULL;
 
-    private static String DB_NAME = "latky";
+    private static final String DB_PATH = "/data/data/com.janosmancik.adrregistr/databases/";
+    private static final String DB_NAME = "rdb";
+    private static final String DATABASE_TABLE = "register";
+//    public static final String KEY_ROWID = "_id";
+    public static final String KEY_UN = "UN";
+    public static final String KEY_KEMLER = "KEMLER";
+    public static final String KEY_NAME = "LATKA";
+/*    public static final String KEY_NAMEB = "LATKABEZD";
+   public static final String KEY_TRIDA = "TRIDA";
+   public static final String KEY_OHROZENI = "OHROZENI";
+    public static final String KEY_OCHRANA = "OCHRANA";
+    public static final String KEY_POZAR = "POZAR";
+    public static final String KEY_ZNECISTENI = "ZNECISTENI";
+    public static final String KEY_POMOC = "POMOC";
+    public static final String KEY_KOD = "KOD";
+*/
+    public static final String[] BASIC_KEYS = {KEY_UN,KEY_KEMLER,KEY_NAME};
+ /*   public static final String[] ALL_KEYS = {KEY_ROWID,KEY_UN,KEY_KEMLER,KEY_NAME,KEY_NAMEB,KEY_TRIDA,KEY_OHROZENI,KEY_OCHRANA,KEY_POZAR,KEY_ZNECISTENI,KEY_POMOC,KEY_KOD};
 
+    public static final int COL_ROWID = 0;
+    private static final int COL_UN = 1;
+    public static final int COL_KEMLER = 2;
+    public static final int COL_NAME = 3;
+    public static final int COL_NAMEB = 4;
+    public static final int COL_TRIDA = 5;
+    public static final int COL_OHROZENI = 6;
+    public static final int COL_OCHRANA = 7;
+    public static final int COL_POZAR = 8;
+    public static final int COL_ZNECISTENI = 9;
+    public static final int COL_POMOC = 10;
+    public static final int COL_KOD = 11;
+*/
     private SQLiteDatabase myDataBase;
 
     private final Context myContext;
@@ -25,20 +57,19 @@ public class DBHelper extends SQLiteOpenHelper{
      * Takes and keeps a reference of the passed context in order to access to the application assets and resources.
      * @param context
      */
-    public DataBaseHelper(Context context) {
+    public DBHelper(Context context) {
 
         super(context, DB_NAME, null, 1);
         this.myContext = context;
-        this.DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
         Log.e("Path 1", DB_PATH);
     }
 
     /**
      * Creates a empty database on the system and rewrites it with your own database.
      * */
-    public void createDataBase() throws IOException{
+    public void create() throws IOException{
 
-        boolean dbExist = checkDataBase();
+        boolean dbExist = check();
 
         if(dbExist){
             //do nothing - database already exist
@@ -50,7 +81,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
             try {
 
-                copyDataBase();
+                copy();
 
             } catch (IOException e) {
 
@@ -65,7 +96,7 @@ public class DBHelper extends SQLiteOpenHelper{
      * Check if the database already exist to avoid re-copying the file each time you open the application.
      * @return true if it exists, false if it doesn't
      */
-    private boolean checkDataBase(){
+    private boolean check(){
 
         SQLiteDatabase checkDB = null;
 
@@ -93,7 +124,7 @@ public class DBHelper extends SQLiteOpenHelper{
      * system folder, from where it can be accessed and handled.
      * This is done by transfering bytestream.
      * */
-    private void copyDataBase() throws IOException{
+    private void copy() throws IOException {
 
         //Open your local db as the input stream
         InputStream myInput = myContext.getAssets().open(DB_NAME);
@@ -118,7 +149,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
     }
 
-    public void openDataBase() throws SQLException{
+    public void open() throws SQLException {
 
         //Open the database
         String myPath = DB_PATH + DB_NAME;
@@ -136,6 +167,15 @@ public class DBHelper extends SQLiteOpenHelper{
 
     }
 
+    public Cursor getAllBasicRows() {
+        String where = null;
+        Cursor c = myDataBase.query(DATABASE_TABLE, BASIC_KEYS, where, null, null, null, null);
+        if(c != null) {
+            c.moveToFirst();
+        }
+        return c;
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
 
@@ -151,4 +191,4 @@ public class DBHelper extends SQLiteOpenHelper{
     // to you to create adapters for your views.
 
 }
-}
+
