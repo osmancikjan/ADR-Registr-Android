@@ -1,6 +1,10 @@
 package com.janosmancik.adrregistr;
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,27 +22,39 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private DBHelper myDB;
+    private ListView obj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        openDB();
-       // populateListView();
-    }
 
-    private void openDB(){
         myDB = new DBHelper(this);
-        myDB.open();
-    }
+        myDB.setAllSubstances();
 
-    private void populateListView(){
-        Cursor cursor = myDB.getAllBasicRows();
-        String[] fromFieldNames = new String[] {DBHelper.KEY_UN, DBHelper.KEY_KEMLER, DBHelper.KEY_NAME};
-        int[] toViewIDs = new int[] {R.id.textUN, R.id.textKemler, R.id.textName};
-        SimpleCursorAdapter myCursorAdapter;
-        myCursorAdapter = new SimpleCursorAdapter(getBaseContext(),R.layout.row,cursor, fromFieldNames, toViewIDs,0);
-        ListView myList = findViewById(R.id.listView);
-        myList.setAdapter(myCursorAdapter);
+        // Construct the data source
+        ArrayList<SubstanceObjectModel> arrayOfSubstances = myDB.getAllSubstancesNames();
+// Create the adapter to convert the array to views
+        SubstanceAdapter adapter = new SubstanceAdapter(this, arrayOfSubstances);
+// Attach the adapter to a ListView
+
+        ListView listView = findViewById(R.id.listView);
+        listView.setAdapter(adapter);
+
+        /*
+        obj.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                int id_To_Search = arg2 + 1;
+
+                Bundle dataBundle = new Bundle();
+                dataBundle.putInt("id", id_To_Search);
+
+                Intent intent = new Intent(getApplicationContext(), DisplaySubstance.class);
+
+                intent.putExtras(dataBundle);
+                startActivity(intent);
+            }
+        });*/
     }
 }
