@@ -3,11 +3,14 @@ package com.janosmancik.adrregistr;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseErrorHandler;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import org.xml.sax.ErrorHandler;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -96,7 +99,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * system folder, from where it can be accessed and handled.
      * This is done by transfering bytestream.
      */
-    private void copyDataBase() throws IOException {
+    public void copyDataBase() throws IOException {
 
         //Open your local db as the input stream
         InputStream myInput = myContext.getAssets().open(DB_NAME);
@@ -177,23 +180,36 @@ public class DBHelper extends SQLiteOpenHelper {
         arrayList.clear();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = ("SELECT * FROM register").trim();
+        //String query = ("SELECT * FROM register").trim();
+        if(db.isOpen()){
+            Cursor res =  db.rawQuery( "SELECT * FROM "+ DB_TABLE+"", null);
+            res.moveToFirst();
 
-        Cursor res = db.rawQuery( query, null);
-        db.close();
-        res.moveToFirst();
+            try {
+                while (!res.isAfterLast()) {
+                    SubstanceObjectModel item = new SubstanceObjectModel();
 
-        while (!res.isAfterLast()) {
+                    item.setUn(res.getString(COL_UN));
+                    item.setKemler(res.getString(COL_KEMLER));
+                    item.setLatka(res.getString(COL_NAME));
 
-            SubstanceObjectModel item = new SubstanceObjectModel();
+                    arrayList.add(item);
+                    res.moveToNext();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                res.close();
+            }finally {
+                db.close();
+            }
+        }else{
+               Log.i("DBInfo","Databaze neni otevřená!");
+            }
 
-            item.setUn(res.getString(COL_UN));
-            item.setKemler(res.getString(COL_KEMLER));
-            item.setLatka(res.getString(COL_NAME));
 
-            arrayList.add(item);
-            res.moveToNext();
-        }
+
+
+
     }
 
     public ArrayList<SubstanceObjectModel> getAllSubstancesNames() {

@@ -15,6 +15,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -30,7 +31,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         myDB = new DBHelper(this);
-        myDB.setAllSubstances();
+        try {
+            myDB.copyDataBase();
+            myDB.setAllSubstances();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
 
         // Construct the data source
         ArrayList<SubstanceObjectModel> arrayOfSubstances = myDB.getAllSubstancesNames();
