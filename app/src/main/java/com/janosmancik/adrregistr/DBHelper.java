@@ -205,6 +205,11 @@ public class DBHelper extends SQLiteOpenHelper {
         }else{
                Log.i("DBInfo","Databaze neni otevřená!");
             }
+
+
+
+
+
     }
 
     public ArrayList<SubstanceObjectModel> getAllSubstancesNames() {
