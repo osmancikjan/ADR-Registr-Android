@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -38,7 +39,15 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        Button btn = findViewById(R.id.detectButton);
 
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), CameraReader.class);
+                startActivity(intent);
+            }
+        });
 
         // Construct the data source
         ArrayList<SubstanceObjectModel> arrayOfSubstances = myDB.getAllSubstancesNames();
