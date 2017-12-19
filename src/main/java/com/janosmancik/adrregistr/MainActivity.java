@@ -7,12 +7,15 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DBHelper myDB;
     private ListView obj;
+    private EditText kemlerInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+      kemlerInput = findViewById(R.id.kemlerInput);
+        kemlerInput.addTextChangedListener(new TextWatcher);
+        kemler.tex
 
         // Construct the data source
         ArrayList<SubstanceObjectModel> arrayOfSubstances = myDB.getAllSubstancesNames();
