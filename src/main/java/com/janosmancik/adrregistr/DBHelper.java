@@ -61,6 +61,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //The Android's default system path of your application database.
 
     public static ArrayList<SubstanceObjectModel> arrayList = new ArrayList<>();
+    public static ArrayList<SubstanceObjectModel> arrayListKemler = new ArrayList<>();
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, 1);
@@ -209,6 +210,70 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public ArrayList<SubstanceObjectModel> getAllSubstancesNames() {
         return arrayList;
+    }
+
+    public ArrayList<SubstanceObjectModel> getAllSubstancesByKemler(String input) {
+        arrayListKemler.clear();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //String query = ("SELECT * FROM register").trim();
+        if(db.isOpen()){
+            Cursor res =  db.rawQuery( "SELECT * FROM "+ DB_TABLE+" WHERE "+ KEY_KEMLER + " LIKE '"+input+"%'", null);
+            res.moveToFirst();
+
+            try {
+                while (!res.isAfterLast()) {
+                    SubstanceObjectModel item = new SubstanceObjectModel();
+
+                    item.setUn(res.getString(COL_UN));
+                    item.setKemler(res.getString(COL_KEMLER));
+                    item.setLatka(res.getString(COL_NAME));
+
+                    arrayListKemler.add(item);
+                    res.moveToNext();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                res.close();
+            }finally {
+                db.close();
+            }
+        }else{
+            Log.i("DBInfo","Databaze neni otevřená!");
+        }
+        return arrayListKemler;
+    }
+
+    public ArrayList<SubstanceObjectModel> getAllSubstancesByUN(String input) {
+        arrayListKemler.clear();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //String query = ("SELECT * FROM register").trim();
+        if(db.isOpen()){
+            Cursor res =  db.rawQuery( "SELECT * FROM "+ DB_TABLE+" WHERE "+ KEY_UN + " LIKE '"+input+"%'", null);
+            res.moveToFirst();
+
+            try {
+                while (!res.isAfterLast()) {
+                    SubstanceObjectModel item = new SubstanceObjectModel();
+
+                    item.setUn(res.getString(COL_UN));
+                    item.setKemler(res.getString(COL_KEMLER));
+                    item.setLatka(res.getString(COL_NAME));
+
+                    arrayListKemler.add(item);
+                    res.moveToNext();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                res.close();
+            }finally {
+                db.close();
+            }
+        }else{
+            Log.i("DBInfo","Databaze neni otevřená!");
+        }
+        return arrayListKemler;
     }
 
     public void removeAll() {
