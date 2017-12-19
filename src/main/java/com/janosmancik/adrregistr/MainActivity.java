@@ -5,10 +5,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Construct the data source
+        arrayOfSubstances = new ArrayList<SubstanceObjectModel>();
        arrayOfSubstances = myDB.getAllSubstancesNames();
+
 // Create the adapter to convert the array to views
 
         final SubstanceAdapter[] adapter = {new SubstanceAdapter(this, arrayOfSubstances)};
@@ -109,20 +115,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*
-        obj.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                int id_To_Search = arg2 + 1;
-
-                Bundle dataBundle = new Bundle();
-                dataBundle.putInt("id", id_To_Search);
 
                 Intent intent = new Intent(getApplicationContext(), DisplaySubstance.class);
-
-                intent.putExtras(dataBundle);
+                intent.putExtra("un", arrayOfSubstances.get(arg2).getUn());
                 startActivity(intent);
             }
-        });*/
+        });
     }
 }

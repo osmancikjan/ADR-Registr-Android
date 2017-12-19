@@ -43,7 +43,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String[] ALL_KEYS = {KEY_ROWID, KEY_UN, KEY_KEMLER, KEY_NAME, KEY_NAMEB, KEY_TRIDA, KEY_OHROZENI, KEY_OCHRANA, KEY_POZAR, KEY_ZNECISTENI, KEY_POMOC, KEY_KOD};
 
     public static final int COL_ROWID = 0;
-    private static final int COL_UN = 1;
+    public static final int COL_UN = 1;
     public static final int COL_KEMLER = 2;
     public static final int COL_NAME = 3;
     public static final int COL_NAMEB = 4;
@@ -157,16 +157,32 @@ public class DBHelper extends SQLiteOpenHelper {
             return true;
         }
     */
+
+
+    // TODO
+
+
     //Cursor representuje vracena data
-    public Cursor getData(int id) {
+    public Cursor getData(String un) {
         SubstanceObjectModel item = new SubstanceObjectModel();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM register where _id=" + id + "", null);
-        db.close();
-        res.moveToNext();
+        if(db.isOpen()) {
+            Cursor res = db.rawQuery("SELECT * FROM register where UN LIKE " + un + "", null);
+            res.moveToNext();
+            try {
+                return res;
+            } catch (Exception e){
+                e.printStackTrace();
+                res.close();
+            }finally {
+                db.close();
+            }
+        }else {
+            Log.i("DBInfo","Databaze neni otevřená!");
 
+        }
         //Cursor res =  db.rawQuery( "select * from contacts LIMIT 1 OFFSET "+id+"", null );
-        return res;
+
     }
 
     /*

@@ -10,7 +10,7 @@ public class SubstanceObjectModel {
     // UN property
 
     public String getUn() {
-        return un;
+        return this.un;
     }
 
     public void setUn(String val) {
@@ -20,7 +20,7 @@ public class SubstanceObjectModel {
     // kemler property
 
     public String getKemler() {
-        return kemler;
+        return this.kemler;
     }
 
     public void setKemler(String val) {
