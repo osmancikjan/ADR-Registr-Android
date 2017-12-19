@@ -1,31 +1,27 @@
 package com.janosmancik.adrregistr;
 
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.SurfaceView;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 
 
 public class MainActivity extends AppCompatActivity {
 
     private DBHelper myDB;
     private ListView obj;
+    private EditText kemlerInput;
+    private EditText unInput;
+    private ListView listView;
+    private ArrayList<SubstanceObjectModel> arrayOfSubstances;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,21 +39,75 @@ public class MainActivity extends AppCompatActivity {
         Button btn = (Button)findViewById(R.id.button);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), RecognitionActivity.class);
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, RecognitionActivity.class);
                 startActivity(intent);
             }
         });
 
-
         // Construct the data source
-        ArrayList<SubstanceObjectModel> arrayOfSubstances = myDB.getAllSubstancesNames();
+       arrayOfSubstances = myDB.getAllSubstancesNames();
 // Create the adapter to convert the array to views
-        SubstanceAdapter adapter = new SubstanceAdapter(this, arrayOfSubstances);
+
+        final SubstanceAdapter[] adapter = {new SubstanceAdapter(this, arrayOfSubstances)};
 // Attach the adapter to a ListView
 
-        ListView listView = findViewById(R.id.listView);
-        listView.setAdapter(adapter);
+        listView = findViewById(R.id.listView);
+        listView.setAdapter(adapter[0]);
+
+        kemlerInput = findViewById(R.id.kemlerInput);
+        kemlerInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                // adapter[0] = new SubstanceAdapter(MainActivity.this, arrayOfSubstances);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length()==0){
+                    arrayOfSubstances = myDB.getAllSubstancesNames();
+                    listView.setAdapter(adapter[0]);
+                    listView.refreshDrawableState();
+                } else {
+                    arrayOfSubstances = myDB.getAllSubstancesByKemler(s.toString());
+                }
+                adapter[0] = new SubstanceAdapter(getApplicationContext(), arrayOfSubstances);
+                listView.setAdapter(adapter[0]);
+                listView.refreshDrawableState();
+            }
+        });
+
+        unInput = findViewById(R.id.unInput);
+        unInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                // adapter[0] = new SubstanceAdapter(MainActivity.this, arrayOfSubstances);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s == null || s.equals("")){
+                    arrayOfSubstances = myDB.getAllSubstancesNames();
+                    listView.setAdapter(adapter[0]);
+                    listView.refreshDrawableState();
+                } else {
+                    arrayOfSubstances = myDB.getAllSubstancesByUN(s.toString());
+                }
+                adapter[0] = new SubstanceAdapter(getApplicationContext(), arrayOfSubstances);
+                listView.setAdapter(adapter[0]);
+                listView.refreshDrawableState();
+            }
+        });
 
         /*
         obj.setOnItemClickListener(new AdapterView.OnItemClickListener() {
