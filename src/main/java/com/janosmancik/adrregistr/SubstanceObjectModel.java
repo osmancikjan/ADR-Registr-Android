@@ -2,7 +2,7 @@ package com.janosmancik.adrregistr;
 
 public class SubstanceObjectModel {
 
-    String un, kemler, latka, bezd, trida, ohrozeni, ochrana, znecisteni, pomoc, kod;
+    private String un, kemler, latka, bezd, trida, ohrozeni, ochrana, znecisteni, pomoc, kod;
 
     public SubstanceObjectModel() {
 
@@ -41,30 +41,42 @@ public class SubstanceObjectModel {
         return bezd;
     }
 
+    public void setBezd(String val) { this.bezd = val; }
+
     public String getTrida() {
         return trida;
     }
+
+    public void setTrida(String val) { this.trida = val; }
 
     public String getOhrozeni() {
         return ohrozeni;
     }
 
+    public void setOhrozeni(String val) { this.ohrozeni = val; }
+
     public String getOchrana() {
         return ochrana;
     }
+
+    public void setOchrana(String val) { this.ochrana = val; }
 
     public String getZnecisteni() {
         return znecisteni;
     }
 
+    public void setZnecisteni(String val) { this.znecisteni = val; }
+
     public String getPomoc() {
         return pomoc;
     }
+
+    public void setPomoc(String val) { this.pomoc = val; }
 
     public String getKod() {
         return kod;
     }
 
-
+    public void setKod(String val) { this.kod = val; }
 
 }

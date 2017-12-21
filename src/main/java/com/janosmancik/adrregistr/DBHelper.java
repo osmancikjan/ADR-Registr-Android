@@ -169,11 +169,13 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
         if(db.isOpen()) {
             try {
-                cursor = db.rawQuery("SELECT * FROM register WHERE UN LIKE " + un + "", null);
+                cursor = db.rawQuery("SELECT * FROM register WHERE UN LIKE \"" + un + "\"", null);
                 cursor.moveToNext();
                 item.setKemler(cursor.getString(COL_KEMLER));
                 item.setLatka(cursor.getString(COL_NAME));
                 item.setUn(cursor.getString(COL_UN));
+                item.setOchrana(cursor.getString(COL_OCHRANA));
+                item.setOhrozeni(cursor.getString(COL_OHROZENI));
                 return item;
             }
             finally {

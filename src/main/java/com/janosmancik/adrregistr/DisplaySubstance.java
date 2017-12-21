@@ -2,9 +2,11 @@ package com.janosmancik.adrregistr;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -18,35 +20,58 @@ public class DisplaySubstance extends Activity {
     TextView kemler;
     TextView un;
     TextView name;
-
-    int id_To_Update = 0;
+    TextView ochrana;
+    TextView ohrozeni;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.row);
+        setContentView(R.layout.substance_detail);
 
-        name = findViewById(R.id.textName);
-        kemler = findViewById(R.id.textKemler);
-        un = findViewById(R.id.textUN);
+        name = findViewById(R.id.nameText);
+        kemler = findViewById(R.id.kemlerText);
+        un = findViewById(R.id.unText);
+        ochrana = findViewById(R.id.text1);
+        ohrozeni = findViewById(R.id.text2);
 
         Intent intent = getIntent();
-        //ziskam ID ktere se ma editovat/zobrazit/mazat poslane z main aktivity
+
         String value = intent.getStringExtra("un");
-        Log.i("value", value);
 
-        String stringUN = "";
+        String stringUN = value;
         String stringNazev = "";
-        if (value.length() > 0) {
-            //z database vytahnu zaznam pod hledanym ID a ulozim do id_To_Update
 
-            SubstanceObjectModel thisSubs = mydb.getData(value);
-            stringUN = thisSubs.getUn();
-            stringNazev = thisSubs.getKemler();
+        SubstanceObjectModel latka = new SubstanceObjectModel();
+
+        if (value.length() > 0) {
+            try {
+                mydb = new DBHelper(getApplicationContext());
+                latka = mydb.getData(value);
+            } catch(Exception e) {
+                Log.w("Error", e.getMessage());
+            }
+            finally {
+                Log.i("Finally", "");
+            }
         }
 
-        un.setText(stringUN);
-        name.setText(stringNazev);
+        un.setText(latka.getUn());
+        name.setText(latka.getLatka());
+        kemler.setText(latka.getKemler());
+        ochrana.setText(latka.getOchrana());
+        ohrozeni.setText(latka.getOhrozeni());
+
+        Button btn = findViewById(R.id.callBtn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_CALL);
+
+                intent.setData(Uri.parse("tel:123"));
+                startActivity(intent);
+            }
+        });
     }
+
 
 }
