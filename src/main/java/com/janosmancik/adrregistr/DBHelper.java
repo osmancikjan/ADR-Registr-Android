@@ -163,29 +163,51 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     //Cursor representuje vracena data
-    public Cursor getData(String un) {
+    public SubstanceObjectModel getData(String un) {
         SubstanceObjectModel item = new SubstanceObjectModel();
         SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
         if(db.isOpen()) {
-            Cursor res = db.rawQuery("SELECT * FROM register where UN LIKE " + un + "", null);
-            res.moveToNext();
             try {
-                return res;
-            } catch (Exception e){
-                e.printStackTrace();
-                res.close();
-            }finally {
+                cursor = db.rawQuery("SELECT * FROM register WHERE UN LIKE " + un + "", null);
+                cursor.moveToNext();
+                item.setKemler(cursor.getString(COL_KEMLER));
+                item.setLatka(cursor.getString(COL_NAME));
+                item.setUn(cursor.getString(COL_UN));
+                return item;
+            }
+            finally {
+
                 db.close();
             }
         }else {
             Log.i("DBInfo","Databaze neni otevřená!");
-
+            return null;
         }
         //Cursor res =  db.rawQuery( "select * from contacts LIMIT 1 OFFSET "+id+"", null );
 
     }
 
     /*
+
+    public String getEmployeeName(String empNo) {
+    Cursor cursor = null;
+    String empName = "";
+    try {
+        cursor = SQLiteDatabaseInstance_.rawQuery("SELECT EmployeeName FROM Employee WHERE EmpNo=?", new String[] {empNo + ""});
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            empName = cursor.getString(cursor.getColumnIndex("EmployeeName"));
+        }
+        return empName;
+    }finally {
+        cursor.close();
+    }
+}
+
+
+
+
         public boolean updateContact (Integer id, String name)
         {
             SQLiteDatabase db = this.getWritableDatabase();

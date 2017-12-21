@@ -31,28 +31,22 @@ public class DisplaySubstance extends Activity {
         un = findViewById(R.id.textUN);
 
         Intent intent = getIntent();
-            //ziskam ID ktere se ma editovat/zobrazit/mazat poslane z main aktivity
-                String value = intent.getStringExtra("un");
-                Log.i("value", value);
-                if (value.length() > 0) {
-                    //z database vytahnu zaznam pod hledanym ID a ulozim do id_To_Update
-                    String stringUN = "";
-                    String stringNazev = "";
-                    try (Cursor rs = mydb.getData(value)) {
-                        rs.moveToFirst();
+        //ziskam ID ktere se ma editovat/zobrazit/mazat poslane z main aktivity
+        String value = intent.getStringExtra("un");
+        Log.i("value", value);
 
-                        //vytahnu zaznam se jmenem
-                        stringUN = rs.getString(mydb.COL_UN);
-                        stringNazev = rs.getString(mydb.COL_NAME);
+        String stringUN = "";
+        String stringNazev = "";
+        if (value.length() > 0) {
+            //z database vytahnu zaznam pod hledanym ID a ulozim do id_To_Update
 
-                        if (!rs.isClosed()) {
-                            rs.close();
-                        }
-                    }
+            SubstanceObjectModel thisSubs = mydb.getData(value);
+            stringUN = thisSubs.getUn();
+            stringNazev = thisSubs.getKemler();
+        }
 
-                    un.setText(stringUN);
-                    name.setText(stringNazev);
-                }
+        un.setText(stringUN);
+        name.setText(stringNazev);
     }
 
 }
