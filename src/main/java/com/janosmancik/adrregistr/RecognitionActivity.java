@@ -122,6 +122,7 @@ public class RecognitionActivity extends AppCompatActivity {
                                 StringBuilder stringBuilder = new StringBuilder();
                                 for (int i = 0; i < items.size(); ++i) {
                                     TextBlock item = items.valueAt(i);
+
                                     stringBuilder.append(item.getValue());
                                     stringBuilder.append("\n");
                                 }
